@@ -1,0 +1,23 @@
+readmonks;
+
+assignments = [0 1];
+show_subassignments = 1;
+
+% Assignment 1
+if (assignments(1))
+  ent(monks_1_train(:, 7))
+  ent(monks_2_train(:, 7))
+  ent(monks_3_train(:, 7))
+end
+  
+% Assignment 2
+if (assignments(2))
+  gain(monks_1_train)
+  gain(monks_2_train)
+  gain(monks_3_train)
+end
+
+if (assignments(2) & show_subassignments)
+  [maxGain, attr] = max(gain(monks_1_train));
+  values(monks_1_train, attr);
+end

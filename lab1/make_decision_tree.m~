@@ -1,0 +1,10 @@
+function [ output_args ] = make_decision_tree(data, depth, maxDepth)
+  if (depth == maxDepth)
+    disp(['Decision: ' num2str(majority_class(data))]);
+    return;
+  end
+  
+  
+
+end
+
