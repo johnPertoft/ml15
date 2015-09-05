@@ -1,7 +1,7 @@
 readmonks;
 
-assignments = [0 1];
-show_subassignments = 1;
+assignments = [0 0 1];
+show_subassignments = 0;
 
 % Assignment 1
 if (assignments(1))
@@ -17,7 +17,37 @@ if (assignments(2))
   gain(monks_3_train)
 end
 
-if (assignments(2) & show_subassignments)
-  [maxGain, attr] = max(gain(monks_1_train));
-  values(monks_1_train, attr);
+if (assignments(2) && show_subassignments)
+  data = monks_1_train;
+  [maxGain, attr] = max(gain(data));
+  for v = values(data, attr)', v
+    S_v = subset(data, attr, v);
+    nextLevelGains = gain(S_v)
+    [nextMaxGain, nextSplitAttr] = max(nextLevelGains)
+    
+    % is this really right?
+    for w = values(data, nextSplitAttr)'
+      majority_class(subset(S_v, nextSplitAttr, w))
+    end
+  end
+end
+
+if (assignments(3))
+  trees = cell(1, 3);
+  trees{1} = build_tree(monks_1_train);
+  trees{2} = build_tree(monks_2_train);
+  trees{3} = build_tree(monks_3_train);
+  
+  for ti = 1:length(trees), ti
+    t = trees{ti};
+    calculate_error(t, monks_1_train)
+    calculate_error(t, monks_1_test)
+  end
+end
+
+if (assignments(4))
+  [n, ~] = size(monks_1_train);
+  p = randperm(n);
+  frac = 0.7;
+  monks_1_train_new = monks_1_train(p(
 end

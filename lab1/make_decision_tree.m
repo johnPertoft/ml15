@@ -10,6 +10,7 @@ function [ ] = make_decision_tree(data, depth, maxDepth)
   disp(['Depth: ' num2str(depth) ' splitting at: ' num2str(attr)]);
   
   for v = values(data, attr)'
+    disp(['Depth: ' num2str(depth) ' v: ' num2str(v)]);
     S_k = data(data(:, attr) == v, :);
     make_decision_tree(S_k, depth + 1, maxDepth);
   end
