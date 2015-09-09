@@ -57,7 +57,7 @@ if (assignments(4))
   err1 = [];
   err3 = [];
   
-  fracs = 0.3:0.05:0.8;
+  fracs = 0.3:0.1:0.8;
   
   for frac = fracs
     err1 = [err1 buildPruneAndCalcError(monks_1_train, monks_1_test, frac)];
@@ -67,4 +67,5 @@ if (assignments(4))
   plot(fracs, err1);
   hold on;
   plot(fracs, err3);
+  legend('show')
 end

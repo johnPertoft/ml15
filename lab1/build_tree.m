@@ -8,7 +8,7 @@ end
 global max_depth;
 
 if isempty(max_depth)
-  max_depth = 10;  
+  max_depth = 10;
 end  
 
 [n_examples,features] = size(data);
