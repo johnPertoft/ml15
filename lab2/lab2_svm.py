@@ -5,7 +5,7 @@ from cvxopt.base import matrix
 import numpy, pylab, random, math
 
 def linearKernel(x, y):
-	return x.dot(y) + 1;
+    return x.dot(y) + 1;
 
 def polynomialKernel(x, y, p):
     return numpy.power(x.dot(y) + 1, p)
@@ -26,7 +26,7 @@ def buildMatrix(data):
 		for j in range(0, len(data)):
 			P[i][j] = data[i][2] * data[j][2] * kernel(numpy.array(data[i][0:2]), numpy.array(data[j][0:2]))
 
-	return P
+        return P
 
 def indicator(data, alpha, x):
 	s = 0
@@ -47,9 +47,9 @@ random.shuffle(data)
 
 pylab.hold(True)
 pylab.plot([p[0] for p in classA], [p[1] for p in classA],
-	'bo')
+        'bo')
 pylab.plot([p[0] for p in classB], [p[1] for p in classB],
-	'ro')
+        'ro')
 
 P = matrix(buildMatrix(data))
 q = matrix(0.0, (len(data), 1))
