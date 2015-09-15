@@ -54,18 +54,24 @@ if (assignments(3))
 end
 
 if (assignments(4))
-  err1 = [];
-  err3 = [];
+  testRuns = 500;
   
   fracs = 0.3:0.1:0.8;
   
-  for frac = fracs
-    err1 = [err1 buildPruneAndCalcError(monks_1_train, monks_1_test, frac)];
-    err3 = [err3 buildPruneAndCalcError(monks_3_train, monks_3_test, frac)];
+  err1 = zeros(testRuns, length(fracs));
+  err3 = zeros(testRuns, length(fracs));
+  
+  for i = 1:testRuns, i
+    for j = 1:length(fracs)
+      err1(i, j) = buildPruneAndCalcError(monks_1_train, monks_1_test, fracs(j));
+      err3(i, j) = buildPruneAndCalcError(monks_3_train, monks_3_test, fracs(j));
+    end
   end
   
-  plot(fracs, err1);
+  plot(fracs, mean(err1));
   hold on;
-  plot(fracs, err3);
-  legend('show')
+  plot(fracs, mean(err3));
+  legend('average errors on monks_1', 'average errors on monks_3');
+  xlabel('frac');
+  ylabel('error');
 end

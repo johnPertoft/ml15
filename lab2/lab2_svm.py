@@ -3,6 +3,7 @@ from cvxopt.solvers import qp
 from cvxopt.base import matrix
 
 import numpy, pylab, random, math
+from numpy import linalg as LA
 
 def linearKernel(x, y):
     return x.dot(y) + 1;
@@ -11,13 +12,14 @@ def polynomialKernel(x, y, p):
     return numpy.power(x.dot(y) + 1, p)
 
 def rbfKernel(x, y, sigma):
-    return numpy.exp(-1 * numpy.power(x - y, 2) / (2 * sigma * sigma))
+    return numpy.exp(-1 * numpy.power(LA.norm(x - y) , 2) / (2 * sigma * sigma))
 
 def sigmoidKernel(x, y, k, delta):
     return numpy.tanh(k * x.transpose() * y - delta)
 
 def kernel(x, y):
-	return polynomialKernel(x,y, 2)
+	#return polynomialKernel(x,y, 2)
+	return rbfKernel(x,y, 1.0)
 
 def buildMatrix(data):
 	P = [0] * len(data)

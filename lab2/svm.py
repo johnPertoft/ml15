@@ -2,10 +2,8 @@ import cvxopt
 from cvxopt.solvers import qp
 from cvxopt.base import matrix
 
-import numpy as np, pylab, random, math
+import numpy as np, pylab, random, math, sys
 from numpy import linalg as LA
-
-
 
 def linearKernel(x, y):
     return x.dot(y) + 1;
@@ -21,10 +19,11 @@ def sigmoidKernel(x, y, k, delta):
 
 def kernel(x, y):
     #return linearKernel(x,y)
-    #return polynomialKernel(x, y, 3)
+    #return polynomialKernel(x, y, 2)
     return rbfKernel(x, y, 1.0)
     #return sigmoidKernel(x, y, 1, 1)
 
+# TODO: do matrix mult instead
 def ind(X, t, alpha, x):
     s = 0
     for i in range(len(alpha)):
@@ -33,6 +32,12 @@ def ind(X, t, alpha, x):
     return s
 
 # ----------- Start
+
+useSlack = False
+C = 0
+if len(sys.argv) >= 2:
+    C = float(sys.argv[1])
+    useSlack = True
 
 classA = [(random.normalvariate(-1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(5)] + [(random.normalvariate(1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(5)]
 
@@ -47,6 +52,10 @@ t = np.array([d[2] for d in data])
 q = -1 * np.ones(len(data))
 h = np.zeros(len(data))
 G = -1 * np.eye(len(data))
+if useSlack:
+    # append to form the equation with the new constraints
+    h = np.hstack((h, C * np.ones(len(data))))
+    G = np.vstack((G, np.eye(len(data)))) 
 
 N = len(X)
 # TODO: do kernels as matrix operation instead
