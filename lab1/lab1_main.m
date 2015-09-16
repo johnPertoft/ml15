@@ -1,6 +1,6 @@
 readmonks;
 
-assignments = [0 0 0 1];
+assignments = [0 0 1 0];
 show_subassignments = 0;
 
 % Assignment 1
@@ -38,19 +38,31 @@ if (assignments(3))
   trees{2} = build_tree(monks_2_train);
   trees{3} = build_tree(monks_3_train);
   
+  dataSets = cell(3, 2);
+  dataSets{1, 1} = monks_1_train;
+  dataSets{1, 2} = monks_1_test;
+  dataSets{2, 1} = monks_2_train;
+  dataSets{2, 2} = monks_2_test;
+  dataSets{3, 1} = monks_3_train;
+  dataSets{3, 2} = monks_3_test;
+  
+  for ti = 1:length(trees)
+    t = trees{ti};
+    calculate_error(t, dataSets{ti, 1})
+    calculate_error(t, dataSets{ti, 2})
+  end
+  
   [n, ~] = size(monks_1_train);
   p = randperm(n);
   frac = 0.7;
   monks_1_train_new = monks_1_train(p(1:floor(n * frac)), :);
   monks_1_validation = monks_1_train(p(floor(n * frac) + 1:n), :);
   T1 = build_tree(monks_1_train_new);
-  trees{4} = prune_tree(T1, monks_1_validation);
+  prunedTree = prune_tree(T1, monks_1_validation);
+
+  disp('error for monks 1 pruned tree');
+  calculate_error(t, monks_1_test)
   
-  for ti = 1:length(trees), ti
-    t = trees{ti};
-    calculate_error(t, monks_1_train)
-    calculate_error(t, monks_1_test)
-  end
 end
 
 if (assignments(4))
