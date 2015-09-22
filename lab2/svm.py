@@ -19,9 +19,9 @@ def sigmoidKernel(x, y, k, delta):
 
 def kernel(x, y):
     #return linearKernel(x,y)
-    #return polynomialKernel(x, y, 2)
+    #return polynomialKernel(x, y, 3)
     return rbfKernel(x, y, 1.0)
-    #return sigmoidKernel(x, y, 1, 1)
+    #return sigmoidKernel(x, y, 0.1, 0)
 
 # TODO: do matrix mult instead
 def ind(X, t, alpha, x):
@@ -78,4 +78,21 @@ pylab.plot([p[0] for p in classA], [p[1] for p in classA], 'bo')
 pylab.plot([p[0] for p in classB], [p[1] for p in classB], 'ro')
 
 pylab.contour(x_range, y_range, grid, (-1.0, 0.0, 1.0), colors=('red', 'black', 'blue'), linewidths=(1,3,1))
+
+## test svm on testdata
+testA = [(random.normalvariate(-1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(50)] + [(random.normalvariate(1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(50)]
+
+testB = [(random.normalvariate(0.0, 0.5), random.normalvariate(-0.5, 0.5), -1.0) for i in range(100)]
+
+testData = testA + testB
+random.shuffle(testData)
+Ttest = np.array([d[2] for d in testData])
+c = np.array([ind(X[svs], t[svs], alpha[svs], np.array([d[0], d[1]])) for d in testData])
+c = np.sign(c)
+c = ((c * Ttest) > 0)
+print "Correctly classified test samples"
+print (np.sum(c) * 1.0) / len(testData)
+pylab.plot([p[0] for p in testA], [p[1] for p in testA], 'b+')
+pylab.plot([p[0] for p in testB], [p[1] for p in testB], 'r+')
 pylab.show()
+
