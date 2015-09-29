@@ -23,7 +23,6 @@ def kernel(x, y):
     return rbfKernel(x, y, 1.0)
     #return sigmoidKernel(x, y, 0.1, 0)
 
-# TODO: do matrix mult instead
 def ind(X, t, alpha, x):
     s = 0
     for i in range(len(alpha)):
@@ -49,22 +48,50 @@ random.shuffle(data)
 X = np.array([[d[0], d[1]] for d in data]) 
 t = np.array([d[2] for d in data])
 
+"""
+with these parameters, cvxopt minimizes
+0.5 * (x^T)Px + (q^T)x
+subject to Gx <= h
+
+we have the optimization problem
+0.5 * (a^T)Pa - (a^T)(1, 1, 1, ...)^T
+subject to
+a_i >= 0 for all i
+
+thus
+x = a, the alphas that we want to find
+h = zeros(len(data))
+G = -1 * eye(len(data)) (minus because the contraint is flipped)
+
+(P_ij = t_i * t_j * K(x_i, x_j))
+
+When adding slack variables we add some contraints to the dual form so that
+we have
+a_i >= 0 for all i (from before)
+a_i <= C
+
+Thus
+h = [zeros(len(data)), C * ones(len(data))]^T
+G = [-1 * eye(len(data))
+     eye(len(data))]
+
+"""
+
 q = -1 * np.ones(len(data))
-h = np.zeros(len(data))
+h = np.zeros(len(data)) # alpha_i >= 0 constraints
 G = -1 * np.eye(len(data))
 if useSlack:
-    # append to form the equation with the new constraints
-    h = np.hstack((h, C * np.ones(len(data))))
+    h = np.hstack((h, C * np.ones(len(data)))) # alpha_i <= C constraints
     G = np.vstack((G, np.eye(len(data)))) 
 
 N = len(X)
-# TODO: do kernels as matrix operation instead
 P = np.outer(t, t) * np.array(
         [[kernel(X[i, :], X[j, :]) for j in range(N)] for i in range(N)])
 
 r = qp(matrix(P), matrix(q), matrix(G), matrix(h))
 alpha = np.array(r['x'])[:, 0]
 svs = np.nonzero(np.absolute(alpha) > 1e-6)[0]
+print "Support vectors: ", svs
 
 x_range = np.arange(-4, 4, 0.05)
 y_range = np.arange(-4, 4, 0.05)
@@ -90,8 +117,8 @@ Ttest = np.array([d[2] for d in testData])
 c = np.array([ind(X[svs], t[svs], alpha[svs], np.array([d[0], d[1]])) for d in testData])
 c = np.sign(c)
 c = ((c * Ttest) > 0)
-print "Correctly classified test samples"
-print (np.sum(c) * 1.0) / len(testData)
+corr = (100.0 * np.sum(c)) / len(testData)
+print "Correctly classified test samples: ", corr, "%"
 pylab.plot([p[0] for p in testA], [p[1] for p in testA], 'b+')
 pylab.plot([p[0] for p in testB], [p[1] for p in testB], 'r+')
 pylab.show()
