@@ -5,8 +5,9 @@ from cvxopt.base import matrix
 import numpy as np, pylab, random, math, sys
 from numpy import linalg as LA
 
+# +1 to the dot product to account for the bias term what was added to W, ??
 def linearKernel(x, y):
-    return x.dot(y) + 1;
+    return x.dot(y) + 1
 
 def polynomialKernel(x, y, p):
     return np.power(x.dot(y) + 1, p)
@@ -15,13 +16,13 @@ def rbfKernel(x, y, sigma):
     return np.exp(-1 * np.power(LA.norm(x - y) , 2) / (2 * sigma * sigma))
 
 def sigmoidKernel(x, y, k, delta):
-    return np.tanh(k * x.dot(y) - delta)
+    return np.tanh(k * (x.dot(y) + 1) - delta)
 
 def kernel(x, y):
     #return linearKernel(x,y)
     #return polynomialKernel(x, y, 3)
     return rbfKernel(x, y, 1.0)
-    #return sigmoidKernel(x, y, 0.1, 0)
+    #return sigmoidKernel(x, y, 0.5, 0)
 
 def ind(X, t, alpha, x):
     s = 0

@@ -1,3 +1,10 @@
+hand = imread('hand', 'ppm');
+book = imread('book', 'ppm');
+
+data1 = normalize_and_label(hand, 0);
+data2 = normalize_and_label(book, 1);
+test_data = [data1; data2];
+
 % train boosted classifier
 T = 6;
 [M, ~] = size(test_data);
