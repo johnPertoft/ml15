@@ -10,8 +10,11 @@ sigma = zeros(length(classes), size(X, 2));
 ci = 1;
 for c = classes'
     Xc = X(labels == c, :);
+    Mi = size(Xc, 1);
     mu(ci, :) = mean(Xc);
-    sigma(ci, :) = std(Xc);
+    %sigma(ci, :) = std(Xc); % gives wrong answer
+    sigma(ci, :) = sqrt(sum(bsxfun(@minus, Xc, mu(ci, :)) .^ 2) ./ Mi);
+    
     ci = ci + 1;
 end
 
