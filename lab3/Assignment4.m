@@ -14,11 +14,27 @@ boost_error_test = 1.0 - sum(class == test_data(:, end)) / M;
 
 boost_error_test
 
+% plot the points
 figure;
 hold on;
 plot(data2(:,1), data2(:,2), '.');
 plot(data1(:,1), data1(:,2), '.r');
 legend('Hand holding book', 'Hand');
+
+% plot the 95 % confidence intervals
+theta = 0:0.01:2*pi;
+for ci = 1:T
+    x1 = 2 * sigma(1, 1, ci) * cos(theta) + mu(1, 1, ci);
+    y1 = 2 * sigma(1, 2, ci) * sin(theta) + mu(1, 2, ci);
+    x2 = 2 * sigma(2, 1, ci) * cos(theta) + mu(2, 1, ci);
+    y2 = 2 * sigma(2, 2, ci) * sin(theta) + mu(2, 2, ci);
+    plot(x1, y1, 'r');
+    plot(x2, y2, 'b');
+    
+end
+
+
+% plot the decision boundary
 ax = [0.2 0.5 0.2 0.45];
 axis(ax);
 x = ax(1):0.01:ax(2);
